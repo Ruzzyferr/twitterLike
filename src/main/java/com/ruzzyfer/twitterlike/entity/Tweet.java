@@ -22,7 +22,7 @@ public class Tweet {
     private String text;
 
     @Column(name = "video_url")
-    private String videoUrl; // Video URL'sini saklayacak alan
+    private String videoUrl;
 
     @OneToMany
     private List<Comment> comments = new ArrayList<>();

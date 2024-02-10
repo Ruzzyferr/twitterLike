@@ -1,6 +1,7 @@
 package com.ruzzyfer.twitterlike.config;
 
 import com.ruzzyfer.twitterlike.entity.User;
+import com.ruzzyfer.twitterlike.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -17,6 +18,11 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String SECRET_KEY = "61235a4d009e8f0eb9adaf347cf851bc0e92ca07db2accec13fa71cd4b29ee1d";
+    private final UserRepository userRepository;
+
+    public JwtService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public String extractUsername(String token){
         return extractClaim(token,Claims::getSubject);
@@ -25,7 +31,12 @@ public class JwtService {
 
     public boolean isValid(String token, UserDetails user){
         String username = extractUsername(token);
-        return (username.equals(user.getUsername())) && isTokenExpired(token);
+        return (username.equals(user.getUsername())) && !isTokenExpired(token);
+    }
+
+    public String getRole(String token){
+        String username = extractUsername(token);
+        return (userRepository.findByUsername(username).orElseThrow().getRole().toString());
     }
 
     private boolean isTokenExpired(String token) {

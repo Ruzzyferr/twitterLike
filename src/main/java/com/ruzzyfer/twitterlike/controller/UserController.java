@@ -8,15 +8,16 @@ import com.ruzzyfer.twitterlike.dto.UserSaveRequestDto;
 import com.ruzzyfer.twitterlike.entity.User;
 import com.ruzzyfer.twitterlike.repository.UserRepository;
 import com.ruzzyfer.twitterlike.service.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -53,6 +54,37 @@ public class UserController {
 
 
         return new ResponseEntity<>(loginBackDto, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/activeusers")
+    public ResponseEntity<List<UserDto>> getAllKullanici(HttpServletRequest request) throws Exception {
+
+        String token = request.getHeader("Authorization");
+
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7); // "Bearer " ifadesini çıkartıyoruz
+
+            String username = jwtService.extractUsername(token);
+            User user = userRepository.findByUsername(username).orElseThrow();
+
+            if (jwtService.isValid(token,user)) {
+
+
+                String role = jwtService.getRole(token);
+
+                if (role.equalsIgnoreCase("ADMIN")) {
+                    return new ResponseEntity<>(userService.listAllKullanici(), HttpStatus.OK);
+                } else {
+                    throw new RuntimeException("Check the Role");
+                }
+
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 

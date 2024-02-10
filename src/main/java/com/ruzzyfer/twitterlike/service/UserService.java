@@ -15,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class UserService {
@@ -76,4 +78,11 @@ public class UserService {
         }
         throw  new RuntimeException("kontrol et");
     }
+
+    public List<UserDto> listAllKullanici() {
+
+        return userMapper.toDtoListFromEntity(userRepository.findAll());
+
+    }
+
 }

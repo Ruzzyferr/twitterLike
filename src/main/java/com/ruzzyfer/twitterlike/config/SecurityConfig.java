@@ -30,13 +30,14 @@ public class SecurityConfig {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         req->req.requestMatchers(
                                 "/user/login",
                                 "/user/save")
                                 .permitAll()
-                                .anyRequest()
-                                .authenticated()
+                                .requestMatchers("/user/activeusers").hasAuthority("ADMIN")
+                                .anyRequest().authenticated()
                 ).userDetailsService(userDetailsServiceImp)
                 .sessionManagement(session->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
