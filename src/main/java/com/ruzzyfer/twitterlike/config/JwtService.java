@@ -54,14 +54,13 @@ public class JwtService {
     }
 
     public String generateToken(User user){
-        String token = Jwts
+        return Jwts
                 .builder()
                 .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
                 .signWith(getSigninKey())
                 .compact();
-        return token;
     }
 
     private SecretKey getSigninKey(){

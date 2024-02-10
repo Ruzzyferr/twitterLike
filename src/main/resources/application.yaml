@@ -10,25 +10,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-      properties:
-        hibernate:
-          jdbc:
-            time_zone: UTC
-    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: user@gmail.com
-    password: password
+    username: ruzgaremirofficial@gmail.com
+    password: tokm ipcp kyzy jjow
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-
-security:
-  jwt:
-    secret-key: twitterlike
-    expiration-time: 3600000

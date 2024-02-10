@@ -8,6 +8,7 @@ import com.ruzzyfer.twitterlike.dto.UserSaveRequestDto;
 import com.ruzzyfer.twitterlike.entity.User;
 import com.ruzzyfer.twitterlike.repository.UserRepository;
 import com.ruzzyfer.twitterlike.service.UserService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<UserDto> save(@RequestBody UserSaveRequestDto dto) {
+    public ResponseEntity<UserDto> save(@RequestBody UserSaveRequestDto dto) throws MessagingException {
 
         UserDto userDto = userService.save(dto);
 
