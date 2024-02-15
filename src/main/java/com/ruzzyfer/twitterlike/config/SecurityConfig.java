@@ -33,8 +33,9 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         req->req.requestMatchers(
-                                "/user/login",
-                                "/user/save")
+                                        "/user/login",
+                                        "/user/save",
+                                        "/user/resetpassword")
                                 .permitAll()
                                 .requestMatchers("/user/activeusers").hasAuthority("ADMIN")
                                 .anyRequest().authenticated()

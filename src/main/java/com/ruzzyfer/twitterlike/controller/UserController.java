@@ -1,14 +1,12 @@
 package com.ruzzyfer.twitterlike.controller;
 
 import com.ruzzyfer.twitterlike.config.JwtService;
-import com.ruzzyfer.twitterlike.dto.LoginDto;
-import com.ruzzyfer.twitterlike.dto.LoginResponse;
-import com.ruzzyfer.twitterlike.dto.UserDto;
-import com.ruzzyfer.twitterlike.dto.UserSaveRequestDto;
+import com.ruzzyfer.twitterlike.dto.*;
 import com.ruzzyfer.twitterlike.entity.User;
+import com.ruzzyfer.twitterlike.mapper.UserMapper;
 import com.ruzzyfer.twitterlike.repository.UserRepository;
 import com.ruzzyfer.twitterlike.service.UserService;
-import jakarta.annotation.security.RolesAllowed;
+import jakarta.annotation.Nullable;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +24,15 @@ public class UserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
     private JwtService jwtService;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService, UserRepository userRepository, UserMapper userMapper) {
         this.userService = userService;
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/save")
@@ -88,6 +88,26 @@ public class UserController {
     }
 
 
+    @PostMapping("/resetpassword")
+    public ResponseEntity<Boolean> resetPassword(@Nullable String resetToken,@RequestBody @Nullable OnlyMail email) throws Exception {
+
+            if (resetToken != null) {
+                User user = userRepository.findByResetToken(resetToken);
+                if (user != null) {
+
+                    return new ResponseEntity<>(userService.passwordReset(resetToken), HttpStatus.OK);
+
+                } else {
+                    throw new RuntimeException("Password Reset Token is invalid");
+                }
+            } else {
+                assert email != null;
+                return new ResponseEntity<>(userService.passwordResetEmail(email.getMail()), HttpStatus.OK);
+            }
 
 
-}
+    }
+
+    }
+
+
