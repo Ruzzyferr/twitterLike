@@ -32,3 +32,4 @@ build/
 ### VS Code ###
 .vscode/
 /src/main/resources/application.yaml
+/src/main/java/com/ruzzyfer/twitterlike/config/S3Config.java
